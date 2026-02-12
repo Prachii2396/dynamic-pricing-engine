@@ -1,0 +1,21 @@
+﻿import numpy as np
+
+# Define bins
+days_to_expiry_bins = [0, 2, 5, 10, 30, 100]
+stock_bins = [0, 10, 20, 50, 100, 1000]
+
+# Smart Q-table logic
+q_table = np.zeros((len(days_to_expiry_bins)+1, len(stock_bins)+1, 3))  # 3 actions: 0%, 10%, 20%
+
+for i in range(q_table.shape[0]):
+    for j in range(q_table.shape[1]):
+        if i <= 2 and j >= 3:
+            q_table[i, j] = [0.2, 0.3, 0.5]  # Favor 20%
+        elif i <= 3 and j >= 2:
+            q_table[i, j] = [0.3, 0.4, 0.3]  # Balanced
+        else:
+            q_table[i, j] = [0.7, 0.2, 0.1]  # Favor 0%
+
+q_table = q_table / q_table.sum(axis=2, keepdims=True)
+np.save("q_table.npy", q_table)
+print("✅ q_table.npy saved")
